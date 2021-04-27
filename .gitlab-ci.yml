@@ -12,6 +12,7 @@ stages:
 
 Test:
   stage: test
+  script:
     - gradle check
     - gradle jacocoTestReport
     - cat rekrUIt/build/jacocoHtml/index.html | grep -o 'Total[^%]*%' | sed 's/<.*>/ /; s/Total/Jacoco Coverage Total:/'
