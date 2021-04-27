@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    ## default connection pool
+    hikari:
+      connectionTimeout: 2000
+      maximumPoolSize: 5
+    ## PostgreSQL
+    url: jdbc:postgresql://ec2-34-233-0-64.compute-1.amazonaws.com:5432/d6ef1jkhacm306
+    username: fkbxsnywqticxx
+    password: 3548e3a134a7f02891d465dd5193c43b52ab29009c391400825ca69bdf1137ec
+  # drop n create table again, good for testing, comment this in production
+  jpa:
+    hibernate:
+      ddl-auto: update
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  security:
+    user:
+      name: user
+      password: an-b15
+  error:
+    whitelabel:
+      enabled: false
+    path: /error-spring
+
+# spring.datasource.url=jdbc:postgresql://localhost:5432/postgres
+# spring.datasource.username=postgres
+# spring.datasource.password=postgres
+# spring.datasource.url=jdbc:postgresql://ec2-34-233-0-64.compute-1.amazonaws.com:5432/d6ef1jkhacm306
+# spring.datasource.username=fkbxsnywqticxx
+# spring.datasource.password=3548e3a134a7f02891d465dd5193c43b52ab29009c391400825ca69bdf1137ec
+
+# drop n create table again, good for testing, comment this in production
+# spring.jpa.hibernate.ddl-auto=create-drop
+# spring.jpa.database-platform=org.hibernate.dialect.PostgreSQLDialect
+# server.error.whitelabel.enabled=false
+# server.error.path=/error-spring
