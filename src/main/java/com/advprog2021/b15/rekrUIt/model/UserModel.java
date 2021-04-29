@@ -2,67 +2,78 @@ package com.advprog2021.b15.rekrUIt.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-
-import javax.annotation.processing.Generated;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
 
-@Entity
-@Table(name="user_acc")
-public class UserModel implements Serializable {
+@Getter
+@Setter
+@NoArgsConstructor
+@Entity(name = "user_acc")
+@Inheritance(strategy = InheritanceType.JOINED)
+public abstract class UserModel implements UserDetails {
 
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(name = "system-uuid", strategy = "uuid")
     private String id;
 
-    @Column(name = "email", nullable = false)
+    @Column(nullable = false)
     private String email;
 
     @Lob
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id_role", referencedColumnName = "id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Enumerated(EnumType.STRING)
+    private UserModelRole userRole;
+
     @JsonIgnore
-    private RoleModel role;
-
-    public String getId() {
-        return this.id;
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(userRole.name());
+        return Collections.singletonList(authority);
     }
 
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    public String getUsername() {
+        return email;
     }
 
-    public String getEmail() {
-        return this.email;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public String getPassword() {
-        return this.password;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 
-    public RoleModel getRole() {
-        return this.role;
-    }
-
-    public void setRole(RoleModel role) {
-        this.role = role;
-    }
+    //@ManyToOne(fetch = FetchType.EAGER)
+    //@JoinColumn(name = "id_role", referencedColumnName = "id", nullable = false)
+    //@OnDelete(action = OnDeleteAction.CASCADE)
+    //@JsonIgnore
+    //private RoleModel role;
 
 }

@@ -5,9 +5,11 @@ import org.springframework.stereotype.Repository;
 
 import com.advprog2021.b15.rekrUIt.model.UserModel;
 
+import java.util.Optional;
+
 @Repository
-public interface UserDb extends JpaRepository<UserModel, Long> {
-    
-    UserModel findByEmail(String email);
+public interface UserModelRepository extends JpaRepository<UserModel, Long> {
+
+    Optional<UserModel> findByEmail(String email);
 
 }
