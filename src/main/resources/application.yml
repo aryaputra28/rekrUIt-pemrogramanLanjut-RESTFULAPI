@@ -15,7 +15,7 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   security:
     user:
-      name: user
+      name: ap-b15
       password: an-b15
   error:
     whitelabel:

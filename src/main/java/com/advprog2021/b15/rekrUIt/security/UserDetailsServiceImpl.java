@@ -1,31 +1,44 @@
 package com.advprog2021.b15.rekrUIt.security;
 
-import java.util.HashSet;
-import java.util.Set;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.advprog2021.b15.rekrUIt.model.UserModel;
-import com.advprog2021.b15.rekrUIt.repository.UserDb;
+import com.advprog2021.b15.rekrUIt.repository.UserModelRepository;
 
+@Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    private UserDb userDb;
+    private UserModelRepository userModelRepository;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override 
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserModel user = userDb.findByEmail(email);
-        Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
-        grantedAuthorities.add(new SimpleGrantedAuthority(user.getRole().getRole()));
-        return new User(user.getEmail(), user.getPassword(), grantedAuthorities);
+        //switch (user.getUserRole()){
+        //    case PENDAFTAR:
+        //        return new PendaftarModel(user);
+        //    case REKRUTER:
+        //        return new RekruterModel(user);
+        //}
+        return userModelRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email + " not found"));
     }
 
+
+    public void registerUser(UserModel userModel) {
+        boolean userExists = userModelRepository.findByEmail(userModel.getEmail()).isPresent();
+
+        if (userExists) {
+            throw new IllegalStateException("email already taken");
+        }
+
+        String encodedPassword = bCryptPasswordEncoder.encode(userModel.getPassword());
+
+        userModel.setPassword(encodedPassword);
+
+        userModelRepository.save(userModel);
+    }
 }
